@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백설동토</title>
+    <style>
+        /* 기본 모바일 스타일 리셋 및 폰트 설정 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #141414;
+            color: #ffffff;
+            line-height: 1.5;
+            padding-bottom: 40px; /* 하단 여백 추가하여 꽉 차 보이지 않게 조절 */
+        }
+
+        /* 래퍼: 화면이 너무 답답하게 꽉 차지 않도록 좌우 여백 제공 */
+        .container {
+            width: 100%;
+            max-width: 480px; /* 모바일 최적화 가로폭 제한 */
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* 헤더 영역 (상단 텍스트 및 아이콘 바) */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 10px 0;
+        }
+
+        .header-left {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #e5e5e5;
+        }
+
+        .header-left span.brand {
+            color: #E50914;
+            font-size: 18px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* 돋보기, 알림, 미러링 아이콘의 단순 텍스트/도형 표현 */
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* 메인 배너 이미지 영역 (검은색 비워둠) */
+        .main-banner {
+            width: 100%;
+            height: 320px;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        /* 작품 정보 스타일 */
+        .contents-info {
+            margin-bottom: 20px;
+        }
+
+        .brand-tag {
+            color: #E50914;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .meta-data {
+            font-size: 12px;
+            color: #a3a3a3;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .match-rate {
+            color: #46d369;
+            font-weight: bold;
+        }
+
+        .age-limit {
+            border: 1px solid #a3a3a3;
+            padding: 0 4px;
+            border-radius: 2px;
+            font-size: 10px;
+        }
+
+        .synopsis {
+            font-size: 13px;
+            color: #d2d2d2;
+            margin-bottom: 16px;
+        }
+
+        /* 버튼 그룹 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            height: 45px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-play {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .btn-wish {
+            background-color: #2f2f2f;
+            color: #ffffff;
+        }
+
+        /* 회차 리스트 영역 */
+        .episode-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #E50914;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .episode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .episode-item {
+            cursor: pointer;
+        }
+
+        .episode-thumb-box {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        /* 회차 썸네일 (검은색 비워둠) */
+        .episode-thumb {
+            width: 130px;
+            height: 75px;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 20px;
+            position: relative;
+        }
+
+        /* 재생 아이콘 모양 */
+        .episode-thumb::after {
+            content: '▶';
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            position: absolute;
+        }
+
+        .episode-title-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .episode-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .episode-runtime {
+            font-size: 12px;
+            color: #737373;
+        }
+
+        .episode-desc {
+            font-size: 12px;
+            color: #a3a3a3;
+            line-height: 1.4;
+        }
+
+        /* 공통 모달(팝업창) 스타일 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: flex-end; /* 아래에서 위로 올라오는 느낌 */
+            z-index: 1000;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 480px;
+            background-color: #1a1a1a;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            max-height: 85vh; /* 화면의 85%까지만 차지하여 상단 여백 확보 */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 16px;
+            overflow-y: auto; /* 내부 스크롤 가능 */
+            flex-index: 1;
+        }
+
+        /* 회차 클릭 시 뜨는 상세 모달용 내부 레이아웃 */
+        .detail-img-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        /* 좋아요/싫어요 버튼 라인 */
+        .interaction-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 16px;
+        }
+
+        .like-btn, .dislike-btn {
+            background: #2a2a2a;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .like-btn.active {
+            background-color: #E50914;
+        }
+
+        .detail-desc {
+            font-size: 13px;
+            color: #d2d2d2;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        /* 댓글 공간 영역 */
+        .comment-section-trigger {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        /* 원고 및 이후에 붙여넣을 글 영역 (스크롤 가능하도록 배치) */
+        .manuscript-area {
+            background-color: #111;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #aaa;
+            min-height: 150px;
+            line-height: 1.6;
+        }
+
+        /* 댓글창 전용 독립 모달 구조 */
+        .comment-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 70px; /* 하단 입력창 자리를 위한 마진 */
+        }
+
+        .comment-item {
+            background: #252525;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .comment-type-tag {
+            font-size: 10px;
+            color: #E50914;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .comment-text {
+            color: #eee;
+        }
+
+        /* 댓글 작성 영역 고정 바 (지워지지 않고 유지됨) */
+        .comment-input-form {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1a1a1a;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: white;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .comment-submit-btn {
+            background: #E50914;
+            color: white;
+            border: none;
+            padding: 0 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-left">
+            <span class="brand">N</span>
+            <span>TV 프로그램</span>
+            <span>영화</span>
+            <span>내가 찜한 콘텐츠</span>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn">🔍</button>
+            <button class="icon-btn">🔔</button>
+            <button class="icon-btn">📺</button>
+        </div>
+    </header>
+
+    <div class="main-banner">
+        [ 메인 타이틀 이미지 들어갈 자리 ]
+    </div>
+
+    <div class="contents-info">
+        <div class="brand-tag">N ORIGINAL SERIES</div>
+        <h1 class="title">백설동토</h1>
+        <div class="meta-data">
+            <span class="match-rate">98% 일치</span>
+            <span>2026</span>
+            <span>시즌 1</span>
+            <span class="age-limit">19+</span>
+            <span>HD</span>
+        </div>
+        <p class="synopsis">도원암귀 무다노 나이토와 우치야 토우마의 이야기를 다룬다.</p>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-play">▶ 재생</button>
+        <button class="btn btn-wish">+ 찜하기</button>
+    </div>
+
+    <div class="episode-section-title">회차</div>
+    
+    <div class="episode-list">
+        <div class="episode-item" onclick="openDetailModal(1, '1. 유대와 포용', '무다노는 라세츠 학원에서 새로운 동료들을 마주한다.')">
+            <div class="episode-thumb-box">
+                <div class="episode-thumb"></div>
+                <div class="episode-title-info">
+                    <div class="episode-title">1. 유대와 포용</div>
+                    <div class="episode-runtime">73분</div>
+                </div>
+            </div>
+            <p class="episode-desc">무다노는 라세츠 학원에서 새로운 동료들을 마주한다.</p>
+        </div>
+
+        <div class="episode-item" onclick="openDetailModal(2, '2. 결연한 믿음', '무다노는 우치야와 깊은 대화를 나누며 심적으로 가까워져 간다.')">
+            <div class="episode-thumb-box">
+                <div class="episode-thumb"></div>
+                <div class="episode-title-info">
+                    <div class="episode-title">2. 결연한 믿음</div>
+                    <div class="episode-runtime">45분</div>
+                </div>
+            </div>
+            <p class="episode-desc">무다노는 우치야와 깊은 대화를 나누며 심적으로 가까워져 간다.</p>
+        </div>
+
+        <div class="episode-item" onclick="openDetailModal(3, '3. 자비와 칭송', '학원 친구들과 훈련을 받던 무다노는 의문의 사건을 마주한다.')">
+            <div class="episode-thumb-box">
+                <div class="episode-thumb"></div>
+                <div class="episode-title-info">
+                    <div class="episode-title">3. 자비와 칭송</div>
+                    <div class="episode-runtime">45분</div>
+                </div>
+            </div>
+            <p class="episode-desc">학원 친구들과 훈련을 받던 무다노는 의문의 사건을 마주한다.</p>
+        </div>
+
+        <div class="episode-item" onclick="openDetailModal(4, '4. 멀어지는 이야기', '눈이 펑펑 내리는 한 겨울 우치야는 자취를 감춘다.')">
+            <div class="episode-thumb-box">
+                <div class="episode-thumb"></div>
+                <div class="episode-title-info">
+                    <div class="episode-title">4. 멀어지는 이야기</div>
+                    <div class="episode-runtime">65분</div>
+                </div>
+            </div>
+            <p class="episode-desc">눈이 펑펑 내리는 한 겨울 우치야는 자취를 감춘다.</p>
+        </div>
+    </div>
+</div>
+
+<div id="detailModal" class="modal-overlay" onclick="closeModal(event, 'detailModal')">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">회차 정보</h3>
+            <button class="modal-close" onclick="document.getElementById('detailModal').style.display='none'">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-img-placeholder">[ 회차별 본문 이미지/작품 들어갈 자리 ]</div>
+            
+            <div class="interaction-bar">
+                <button class="like-btn" onclick="toggleLike(this)">👍 <span class="count">0</span></button>
+                <button class="dislike-btn" onclick="toggleLike(this)">👎</button>
+            </div>
+
+            <p id="modalDesc" class="detail-desc">설명글이 들어가는 자리입니다.</p>
+
+            <div class="comment-section-trigger" onclick="openCommentModal()">
+                💬 댓글 보기 / 작성하기
+            </div>
+
+            <div class="manuscript-area">
+                <strong>[ 원고 및 추가 내용 스크롤 영역 ]</strong><br><br>
+                여기에 추후 자유롭게 텍스트나 소설, 원고 내용 등을 길게 붙여넣으실 수 있습니다. 내용이 많아지면 기획안대로 이 내부에서 자연스럽게 아래로 스크롤이 가능해집니다.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="commentModal" class="modal-overlay" onclick="closeModal(event, 'commentModal')">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>댓글 목록</h3>
+            <button class="modal-close" onclick="document.getElementById('commentModal').style.display='none'">×</button>
+        </div>
+        <div class="modal-body" style="position: relative;">
+            
+            <div id="commentList" class="comment-list-container">
+                <div class="comment-item">
+                    <div class="comment-type-tag">① [시스템 추천/랜덤]</div>
+                    <div class="comment-text">무다노 너무 멋있어요! 다음 화가 기대됩니다.</div>
+                </div>
+                <div class="comment-item">
+                    <div class="comment-type-tag">② [일반 댓글]</div>
+                    <div class="comment-text">우치야는 도대체 어디로 간 걸까요? 연출 대박이네요.</div>
+                </div>
+            </div>
+
+            <div class="comment-input-form">
+                <input type="text" id="commentInput" class="comment-input" placeholder="댓글을 입력해 주세요...">
+                <button class="comment-submit-btn" onclick="addComment()">▶</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // 회차 클릭 시 상세 팝업 오픈 함수
+    function openDetailModal(id, title, desc) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    // 댓글 모달 열기
+    function openCommentModal() {
+        document.getElementById('commentModal').style.display = 'flex';
+    }
+
+    // 배경 클릭 시 팝업 닫기 처리
+    function closeModal(event, id) {
+        if (event.target === document.getElementById(id)) {
+            document.getElementById(id).style.display = 'none';
+        }
+    }
+
+    // 좋아요 토글 기능
+    function toggleLike(btn) {
+        if(btn.classList.contains('like-btn')) {
+            btn.classList.toggle('active');
+            let countSpan = btn.querySelector('.count');
+            let currentCount = parseInt(countSpan.innerText);
+            if(btn.classList.contains('active')) {
+                countSpan.innerText = currentCount + 1;
+            } else {
+                countSpan.innerText = currentCount - 1;
+            }
+        } else {
+            alert('의견이 반영되었습니다.');
+        }
+    }
+
+    // ③ 방문자 실시간 댓글 등록 함수 (지워지지 않고 계속 누적 추가됨)
+    function addComment() {
+        const input = document.getElementById('commentInput');
+        const text = input.value.trim();
+        
+        if (text === '') {
+            alert('댓글 내용을 입력해주세요!');
+            return;
+        }
+
+        const commentList = document.getElementById('commentList');
+        
+        // 새 댓글 요소 만들기
+        const newComment = document.createElement('div');
+        newComment.className = 'comment-item';
+        newComment.innerHTML = `
+            <div class="comment-type-tag">② [방문자 댓글]</div>
+            <div class="comment-text">${text}</div>
+        `;
+
+        // 리스트에 추가
+        commentList.appendChild(newComment);
+        
+        // 입력창 비우기 및 스크롤 하단 이동
+        input.value = '';
+        const modalBody = document.querySelector('#commentModal .modal-body');
+        modalBody.scrollTop = modalBody.scrollHeight;
+    }
+
+    // 엔터키 쳐도 댓글 등록되게 처리
+    document.getElementById('commentInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addComment();
+        }
+    });
+</script>
+
+</body>
+</html>
